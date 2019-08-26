@@ -20,6 +20,8 @@ public class RecipeListActivity extends BaseActivity {
                 }
             }
         });
+
+        // test
     }
 
 }
