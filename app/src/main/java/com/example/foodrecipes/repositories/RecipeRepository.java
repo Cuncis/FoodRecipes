@@ -3,6 +3,7 @@ package com.example.foodrecipes.repositories;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.foodrecipes.data.RecipeApiClient;
 import com.example.foodrecipes.model.Recipe;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 public class RecipeRepository {
 
     public static RecipeRepository instance;
-    private MutableLiveData<List<Recipe>> recipes;
+    public RecipeApiClient recipeApiClient;
 
     public static RecipeRepository getInstance() {
         if (instance == null) {
@@ -21,11 +22,18 @@ public class RecipeRepository {
     }
 
     private RecipeRepository() {
-        recipes = new MutableLiveData<>();
+        recipeApiClient = RecipeApiClient.getInstance();
     }
 
     public LiveData<List<Recipe>> getRecipes() {
-        return recipes;
+        return recipeApiClient.getRecipes();
+    }
+
+    public void searchRecipesApi(String query, int pageNumber) {
+        if (pageNumber == 0) {
+            pageNumber = 1;
+        }
+        recipeApiClient.searchRecipesApi(query, pageNumber);
     }
 
 }

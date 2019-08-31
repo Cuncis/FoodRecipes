@@ -14,6 +14,7 @@ import com.example.foodrecipes.data.RecipeApi;
 import com.example.foodrecipes.model.Recipe;
 import com.example.foodrecipes.model.RecipeResponse;
 import com.example.foodrecipes.utils.Constants;
+import com.example.foodrecipes.utils.Testing;
 import com.example.foodrecipes.viewmodel.RecipeListViewModel;
 
 import java.util.List;
@@ -34,14 +35,15 @@ public class RecipeListActivity extends BaseActivity {
 
         recipeListViewModel = ViewModelProviders.of(this).get(RecipeListViewModel.class);
 
-        subscribeObservers();
+        findViewById(R.id.test).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                testRetrofitRequest();
+            }
+        });
 
-//        findViewById(R.id.test).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                testRetrofitRequest();
-//            }
-//        });
+
+        subscribeObservers();
 
         // test
     }
@@ -50,37 +52,20 @@ public class RecipeListActivity extends BaseActivity {
         recipeListViewModel.getRecipe().observe(this, new Observer<List<Recipe>>() {
             @Override
             public void onChanged(List<Recipe> recipes) {
+                if (recipes != null) {
+                    Testing.printRecipes(recipes, TAG);
+                }
 
             }
         });
     }
 
+    public void searchRecipesApi(String query, int pageNumber) {
+        recipeListViewModel.searchRecipesApi(query, pageNumber);
+    }
+
     private void testRetrofitRequest() {
-        final RecipeApi recipeApi = ApiClient.getRecipeApi();
-
-        Call<RecipeResponse> call = recipeApi.searchRecipe(Constants.API_KEY,
-                "Chicken breast",
-                "1");
-
-        call.enqueue(new Callback<RecipeResponse>() {
-            @Override
-            public void onResponse(Call<RecipeResponse> call, Response<RecipeResponse> response) {
-                if (response.isSuccessful()) {
-                    Log.d(TAG, "onResponse: " + response.body().toString());
-                    List<Recipe> recipes = response.body().getRecipes();
-                    for (Recipe recipe: recipes) {
-                        Log.d(TAG, "onResponse: title: " + recipe.getTitle());
-                    }
-                } else {
-                    Log.d(TAG, "onResponse: Error: " + response.message());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RecipeResponse> call, Throwable t) {
-                Log.d(TAG, "onFailure: " + t.getMessage());
-            }
-        });
+        searchRecipesApi("chicken breast", 1);
     }
 
 }
