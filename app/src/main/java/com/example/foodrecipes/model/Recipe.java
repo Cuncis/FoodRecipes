@@ -1,13 +1,9 @@
 package com.example.foodrecipes.model;
 
-
-import android.os.Parcel;
-import android.os.Parcelable;
-
+import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
-
-public class Recipe implements Parcelable {
+public class Recipe{
 
 	@SerializedName("social_rank")
 	private double socialRank;
@@ -27,37 +23,14 @@ public class Recipe implements Parcelable {
 	@SerializedName("publisher")
 	private String publisher;
 
+	@SerializedName("ingredients")
+	private List<String> ingredients;
+
 	@SerializedName("title")
 	private String title;
 
 	@SerializedName("source_url")
 	private String sourceUrl;
-
-	public Recipe() {
-	}
-
-	protected Recipe(Parcel in) {
-		socialRank = in.readDouble();
-		f2fUrl = in.readString();
-		recipeId = in.readString();
-		publisherUrl = in.readString();
-		imageUrl = in.readString();
-		publisher = in.readString();
-		title = in.readString();
-		sourceUrl = in.readString();
-	}
-
-	public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {
-		@Override
-		public Recipe createFromParcel(Parcel in) {
-			return new Recipe(in);
-		}
-
-		@Override
-		public Recipe[] newArray(int size) {
-			return new Recipe[size];
-		}
-	};
 
 	public void setSocialRank(double socialRank){
 		this.socialRank = socialRank;
@@ -107,6 +80,14 @@ public class Recipe implements Parcelable {
 		return publisher;
 	}
 
+	public void setIngredients(List<String> ingredients){
+		this.ingredients = ingredients;
+	}
+
+	public List<String> getIngredients(){
+		return ingredients;
+	}
+
 	public void setTitle(String title){
 		this.title = title;
 	}
@@ -126,32 +107,16 @@ public class Recipe implements Parcelable {
 	@Override
  	public String toString(){
 		return 
-			"Recipe{" +
+			"Recipe{" + 
 			"social_rank = '" + socialRank + '\'' + 
 			",f2f_url = '" + f2fUrl + '\'' + 
 			",recipe_id = '" + recipeId + '\'' + 
 			",publisher_url = '" + publisherUrl + '\'' + 
 			",image_url = '" + imageUrl + '\'' + 
 			",publisher = '" + publisher + '\'' + 
+			",ingredients = '" + ingredients + '\'' + 
 			",title = '" + title + '\'' + 
 			",source_url = '" + sourceUrl + '\'' + 
 			"}";
 		}
-
-	@Override
-	public int describeContents() {
-		return 0;
-	}
-
-	@Override
-	public void writeToParcel(Parcel parcel, int i) {
-		parcel.writeDouble(socialRank);
-		parcel.writeString(f2fUrl);
-		parcel.writeString(recipeId);
-		parcel.writeString(publisherUrl);
-		parcel.writeString(imageUrl);
-		parcel.writeString(publisher);
-		parcel.writeString(title);
-		parcel.writeString(sourceUrl);
-	}
 }

@@ -1,5 +1,6 @@
 package com.example.foodrecipes;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.foodrecipes.adapter.OnRecipeListener;
 import com.example.foodrecipes.adapter.RecipeAdapter;
-import com.example.foodrecipes.model.Recipe;
+import com.example.foodrecipes.model.Recipes;
 import com.example.foodrecipes.utils.Testing;
 import com.example.foodrecipes.utils.VerticalSpacingItemDecorator;
 import com.example.foodrecipes.viewmodel.RecipeListViewModel;
@@ -51,9 +52,9 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
     }
 
     private void subscribeObservers() {
-        recipeListViewModel.getRecipe().observe(this, new Observer<List<Recipe>>() {
+        recipeListViewModel.getRecipe().observe(this, new Observer<List<Recipes>>() {
             @Override
-            public void onChanged(List<Recipe> recipes) {
+            public void onChanged(List<Recipes> recipes) {
                 if (recipes != null) {
                     if (recipeListViewModel.isViewingRecipes()) {
                         Testing.printRecipes(recipes, TAG);
@@ -89,11 +90,23 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
         rvRecipes.addItemDecoration(itemDecorator);
         rvRecipes.setAdapter(recipeAdapter);
         rvRecipes.setLayoutManager(new LinearLayoutManager(this));
+
+        rvRecipes.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                if (!rvRecipes.canScrollVertically(1)) {
+                    // Search the next page
+                    recipeListViewModel.searchNextPage();
+                }
+            }
+        });
     }
 
     @Override
     public void onRecipeClick(int position) {
-
+        Intent i = new Intent(this, RecipeActivity.class);
+        i.putExtra("recipe", recipeAdapter.getSelectedRecipe(position));
+        startActivity(i);
     }
 
     @Override

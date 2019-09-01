@@ -1,10 +1,9 @@
 package com.example.foodrecipes.viewmodel;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.foodrecipes.model.Recipe;
+import com.example.foodrecipes.model.Recipes;
 import com.example.foodrecipes.repositories.RecipeRepository;
 
 import java.util.List;
@@ -20,7 +19,7 @@ public class RecipeListViewModel extends ViewModel {
         isPerformingQuery = false;
     }
 
-    public LiveData<List<Recipe>> getRecipe() {
+    public LiveData<List<Recipes>> getRecipe() {
         return recipeRepository.getRecipes();
     }
 
@@ -28,6 +27,12 @@ public class RecipeListViewModel extends ViewModel {
         isViewingRecipes = true;
         isPerformingQuery = true;
         recipeRepository.searchRecipesApi(query, pageNumber);
+    }
+
+    public void searchNextPage() {
+        if (!isPerformingQuery && isViewingRecipes) {
+            recipeRepository.searchNextPage();
+        }
     }
 
     public boolean isViewingRecipes() {
