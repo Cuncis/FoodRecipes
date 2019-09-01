@@ -33,6 +33,9 @@ public class Recipe implements Parcelable {
 	@SerializedName("source_url")
 	private String sourceUrl;
 
+	public Recipe() {
+	}
+
 	protected Recipe(Parcel in) {
 		socialRank = in.readDouble();
 		f2fUrl = in.readString();

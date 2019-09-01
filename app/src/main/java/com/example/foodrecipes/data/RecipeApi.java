@@ -16,7 +16,7 @@ public interface RecipeApi {
                                       @Query("page") String page);
 
     @GET("api/get")
-    Call<RecipeResponse> getRecipes(@Query("key") String key,
+    Call<RecipeResponse> getRecipe(@Query("key") String key,
                                     @Query("rId") String recipeId);
 
 }

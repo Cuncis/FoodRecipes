@@ -110,11 +110,16 @@ public class RecipeApiClient {
             );
         }
 
-        private void cancelRequqest() {
+        private void cancelRequest() {
             Log.d(TAG, "cancelRequqest: canceling the search request");
             cancelRequest = true;
         }
+    }
 
+    public void cancelRequest() {
+        if (retrieveRecipesRunnable != null) {
+            retrieveRecipesRunnable.cancelRequest();
+        }
     }
 
 }

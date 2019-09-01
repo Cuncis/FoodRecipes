@@ -9,4 +9,19 @@ public class Constants {
 
     public static final String API_KEY = "a659409e551d6af128a9f572a31a3e95";
 
+    public static final String[] DEFAULT_SEARCH_CATEGORIES =
+            {"Barbeque", "Breakfast", "Chicken", "Beef", "Brunch", "Dinner", "Wine", "Italian"};
+
+    public static final String[] DEFAULT_SEARCH_CATEGORY_IMAGES =
+            {
+                    "barbeque",
+                    "breakfast",
+                    "chicken",
+                    "beef",
+                    "brunch",
+                    "dinner",
+                    "wine",
+                    "italian"
+            };
+
 }
