@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.foodrecipes.R;
+import com.example.foodrecipes.model.Recipe;
 import com.example.foodrecipes.model.Recipes;
 import com.example.foodrecipes.utils.Constants;
 
@@ -22,6 +23,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private static final int RECIPE_TYPE = 1;
     private static final int LOADING_TYPE = 2;
     private static final int CATEGORY_TYPE = 3;
+    private static final int EXHAUSTED_TYPE = 4;
 
     private List<Recipes> recipesList;
     private OnRecipeListener onRecipeListener;
@@ -41,6 +43,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         } else if (viewType == CATEGORY_TYPE) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_category_list, parent, false);
             return new CategoryViewHolder(view, onRecipeListener);
+        } else if (viewType == EXHAUSTED_TYPE) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_search_exhausted, parent, false);
+            return new SearchExhaustedViewHolder(view);
         }
         view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recipe_list, parent, false);
         return new RecipeViewHolder(view, onRecipeListener);
@@ -83,10 +88,32 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             return CATEGORY_TYPE;
         } else if (recipesList.get(position).getTitle().equals("LOADING...")) {
             return LOADING_TYPE;
+        }  else if (recipesList.get(position).getTitle().equals("EXHAUSTED...")) {
+            return EXHAUSTED_TYPE;
         }  else if (position == recipesList.size()-1 && position != 0 && !recipesList.get(position).getTitle().equals("EXHAUSTED...")) {
             return LOADING_TYPE;
         } else {
             return RECIPE_TYPE;
+        }
+    }
+
+    public void setQueryExhausted() {
+        hideLoading();
+        Recipes exhaustedRecipe = new Recipes();
+        exhaustedRecipe.setTitle("EXHAUSTED...");
+        recipesList.add(exhaustedRecipe);
+        notifyDataSetChanged();
+    }
+
+    private void hideLoading() {
+        if (isLoading()) {
+            for (Recipes recipe: recipesList) {
+                if (recipe.getTitle().equals("LOADING...")) {
+                    recipesList.remove(recipe);
+                }
+            }
+
+            notifyDataSetChanged();
         }
     }
 

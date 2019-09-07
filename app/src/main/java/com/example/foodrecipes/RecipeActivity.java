@@ -2,6 +2,8 @@ package com.example.foodrecipes;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -11,6 +13,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.foodrecipes.model.Recipe;
 import com.example.foodrecipes.model.Recipes;
 import com.example.foodrecipes.viewmodel.RecipeViewModel;
@@ -38,6 +42,7 @@ public class RecipeActivity extends BaseActivity {
 
         recipeViewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
 
+        showProgressBar(true);
         subscribeObservers();
         getIncomingIntent();
     }
@@ -55,14 +60,86 @@ public class RecipeActivity extends BaseActivity {
             @Override
             public void onChanged(Recipe recipe) {
                 if (recipe != null) {
-                    Log.d(TAG, "onChanged: -----------------------------");
-                    Log.d(TAG, "onChanged: " + recipe.getTitle());
-                    for (String ingredients: recipe.getIngredients()) {
-                        Log.d(TAG, "onChanged: " + ingredients);
+                    if (recipe.getRecipeId().equals(recipeViewModel.getRecipeId())) {
+                        setRecipeProperties(recipe);
+                        recipeViewModel.setDidRetrieveRecipe(true);
                     }
                 }
             }
         });
+
+        recipeViewModel.isRecipeTimedOut().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean && !recipeViewModel.isDidRetrieveRecipe()) {
+                    Log.d(TAG, "onChanged: Timed Out..");
+                    displayErrorScreen("Error retrieving data. Check Network Connection...");
+                }
+            }
+        });
+    }
+
+    private void displayErrorScreen(String errorMessage) {
+        recipeTitle.setText("Error Retrieving recipe...");
+        recipeRank.setText("");
+        TextView textView = new TextView(this);
+        if (!errorMessage.equals("")) {
+            textView.setText(errorMessage);
+        } else {
+            textView.setText("Error");
+        }
+        textView.setTextSize(15);
+        textView.setLayoutParams(new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        ));
+        recipeIngredienContainer.addView(textView);
+
+        RequestOptions requestOptions = new RequestOptions()
+                .placeholder(R.drawable.ic_launcher_background);
+
+        Glide.with(this)
+                .setDefaultRequestOptions(requestOptions)
+                .load(R.drawable.ic_launcher_background)
+                .into(recipeImage);
+
+        showParent();
+        showProgressBar(false);
+    }
+
+    private void setRecipeProperties(Recipe recipe) {
+        if (recipe != null) {
+            RequestOptions requestOptions = new RequestOptions()
+                    .placeholder(R.drawable.ic_launcher_background);
+
+            Glide.with(this)
+                    .setDefaultRequestOptions(requestOptions)
+                    .load(recipe.getImageUrl())
+                    .into(recipeImage);
+
+            recipeTitle.setText(recipe.getTitle());
+            recipeRank.setText(String.valueOf(Math.round(recipe.getSocialRank())));
+
+            recipeIngredienContainer.removeAllViews();
+            for (String ingredients: recipe.getIngredients()) {
+                TextView textView = new TextView(this);
+                textView.setText(ingredients);
+                textView.setTextSize(15);
+                textView.setLayoutParams(new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                ));
+
+                recipeIngredienContainer.addView(textView);
+            }
+        }
+
+        showParent();
+        showProgressBar(false);
+    }
+
+    private void showParent() {
+        scrollView.setVisibility(View.VISIBLE);
     }
 
 }

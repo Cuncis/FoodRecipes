@@ -2,6 +2,7 @@ package com.example.foodrecipes;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -52,7 +53,7 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
     }
 
     private void subscribeObservers() {
-        recipeListViewModel.getRecipe().observe(this, new Observer<List<Recipes>>() {
+        recipeListViewModel.getRecipes().observe(this, new Observer<List<Recipes>>() {
             @Override
             public void onChanged(List<Recipes> recipes) {
                 if (recipes != null) {
@@ -61,6 +62,16 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
                         recipeListViewModel.setIsPerformingQuery(false);
                         recipeAdapter.setRecipes(recipes);
                     }
+                }
+            }
+        });
+
+        recipeListViewModel.isQueryExhausted().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean) {
+                    Log.d(TAG, "onChanged: The query is exhausted...");
+                    recipeAdapter.setQueryExhausted();
                 }
             }
         });
