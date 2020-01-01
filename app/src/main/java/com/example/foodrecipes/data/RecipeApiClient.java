@@ -137,7 +137,6 @@ public class RecipeApiClient {
 
         private Call<RecipesResponse> getRecipes(String query, int pageNumber) {
             return ApiClient.getRecipeApi().searchRecipe(
-                    Constants.API_KEY,
                     query,
                     String.valueOf(pageNumber)
             );
@@ -184,7 +183,6 @@ public class RecipeApiClient {
 
         private Call<RecipeResponse> getRecipe(String recipeId) {
             return ApiClient.getRecipeApi().getRecipe(
-                    Constants.API_KEY,
                     recipeId
             );
         }

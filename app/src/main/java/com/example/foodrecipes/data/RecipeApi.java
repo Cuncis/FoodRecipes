@@ -11,13 +11,21 @@ public interface RecipeApi {
 
 
     // SEARCH
+//    @GET("api/search")
+//    Call<RecipesResponse> searchRecipe(@Query("key") String apiKey,
+//                                       @Query("q") String query,
+//                                       @Query("page") String page);
+//
+//    @GET("api/get")
+//    Call<RecipeResponse> getRecipe(@Query("key") String key,
+//                                   @Query("rId") String recipeId);
+
+    // SEARCH
     @GET("api/search")
-    Call<RecipesResponse> searchRecipe(@Query("key") String apiKey,
-                                       @Query("q") String query,
+    Call<RecipesResponse> searchRecipe(@Query("q") String query,
                                        @Query("page") String page);
 
     @GET("api/get")
-    Call<RecipeResponse> getRecipe(@Query("key") String key,
-                                   @Query("rId") String recipeId);
+    Call<RecipeResponse> getRecipe(@Query("rId") String recipeId);
 
 }
